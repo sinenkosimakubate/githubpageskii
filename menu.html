@@ -96,7 +96,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Complete Menu Data
+// FULL Menu Data
 const menuData = {
     drinks: [
         {name: "Cappuccino", price: "P42.90", desc: "Espresso with steamed milk and thick foam", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80", popular: true},
@@ -128,11 +128,9 @@ const menuData = {
 
 function renderCategory(category) {
     const container = document.getElementById('menuContainer');
-    let heroImage = '';
-    
-    if (category === 'drinks') heroImage = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085';
-    else if (category === 'pastries') heroImage = 'https://images.unsplash.com/photo-1555507036-4f7c8e5c6e4e';
-    else heroImage = 'https://images.unsplash.com/photo-1504753793650-d4e3c8e6c3e3';
+    let heroImage = category === 'drinks' ? 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085' :
+                    category === 'pastries' ? 'https://images.unsplash.com/photo-1555507036-4f7c8e5c6e4e' :
+                    'https://images.unsplash.com/photo-1504753793650-d4e3c8e6c3e3';
 
     container.innerHTML = `
         <div class="menu-hero" style="background-image: url('${heroImage}?auto=format&fit=crop&w=2000&q=80')">
@@ -142,7 +140,8 @@ function renderCategory(category) {
     `;
 
     const grid = document.getElementById(`${category}-grid`);
-    
+    grid.innerHTML = '';   // Clear previous
+
     menuData[category].forEach(item => {
         const card = `
             <div class="col">
@@ -166,7 +165,7 @@ function renderCategory(category) {
     });
 }
 
-// Tab functionality
+// Tab Click
 document.querySelectorAll('.category-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -175,13 +174,11 @@ document.querySelectorAll('.category-tab').forEach(tab => {
     });
 });
 
-// Search (basic)
 function filterMenu() {
-    // Can be enhanced later
-    console.log("Search:", document.getElementById('searchInput').value);
+    console.log("Searching...");
 }
 
-// Initial render
+// Initial Load
 renderCategory('drinks');
 
 // Cart
@@ -190,12 +187,11 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 function addToCart(name, price) {
     cart.push({name, price});
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`✅ ${name} has been added to your cart!`);
+    alert(`✅ ${name} added to cart!`);
 }
 
 window.addToCart = addToCart;
 </script>
 </body>
 </html>
-
 
