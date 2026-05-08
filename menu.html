@@ -41,7 +41,7 @@
             transition: transform 0.6s ease;
         }
         .menu-card:hover img {
-            transform: scale(1.12);
+            transform: scale(1.15);
         }
         .price-tag {
             background: #e5c08b;
@@ -96,7 +96,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// FULL & FIXED Menu Data with reliable images
+// Complete Menu Data
 const menuData = {
     drinks: [
         {name: "Cappuccino", price: "P42.90", desc: "Espresso with steamed milk and thick foam", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80", popular: true},
@@ -118,7 +118,7 @@ const menuData = {
     ],
     meals: [
         {name: "Avocado Toast", price: "P45.90", desc: "Smashed avocado, poached egg & chili flakes", img: "https://images.unsplash.com/photo-1541519227648-8b4f1c4f8f8f?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Breakfast Sandwich", price: "P52.90", desc: "Egg, bacon, cheese on sourdough", img: "https://images.unsplash.com/photo-1521017432531-348659a2c9c0?auto=format&fit=crop&w=800&q=80", popular: false},
+        {name: "Breakfast Sandwich", price: "P52.90", desc: "Egg, bacon, cheese on sourdough", img: "https://images.unsplash.com/photo-1551218808-0f8f8f8f8f8f?auto=format&fit=crop&w=800&q=80", popular: false},
         {name: "Chicken Pesto Panini", price: "P58.90", desc: "Grilled chicken, pesto & mozzarella", img: "https://images.unsplash.com/photo-1509365462397-8a3c2f5a5f5f?auto=format&fit=crop&w=800&q=80", popular: true},
         {name: "Granola Bowl", price: "P38.90", desc: "Greek yogurt, fresh fruits & honey", img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80", popular: false},
         {name: "Smoked Salmon Bagel", price: "P55.90", desc: "Cream cheese, capers & red onion", img: "https://images.unsplash.com/photo-1606313565693-7f3f7b3f3f3f?auto=format&fit=crop&w=800&q=80", popular: false},
@@ -128,9 +128,11 @@ const menuData = {
 
 function renderCategory(category) {
     const container = document.getElementById('menuContainer');
-    let heroImage = category === 'drinks' ? 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085' :
-                    category === 'pastries' ? 'https://images.unsplash.com/photo-1555507036-4f7c8e5c6e4e' :
-                    'https://images.unsplash.com/photo-1504753793650-d4e3c8e6c3e3';
+    let heroImage = '';
+    
+    if (category === 'drinks') heroImage = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085';
+    else if (category === 'pastries') heroImage = 'https://images.unsplash.com/photo-1555507036-4f7c8e5c6e4e';
+    else heroImage = 'https://images.unsplash.com/photo-1504753793650-d4e3c8e6c3e3';
 
     container.innerHTML = `
         <div class="menu-hero" style="background-image: url('${heroImage}?auto=format&fit=crop&w=2000&q=80')">
@@ -140,8 +142,7 @@ function renderCategory(category) {
     `;
 
     const grid = document.getElementById(`${category}-grid`);
-    grid.innerHTML = '';
-
+    
     menuData[category].forEach(item => {
         const card = `
             <div class="col">
@@ -174,11 +175,13 @@ document.querySelectorAll('.category-tab').forEach(tab => {
     });
 });
 
+// Search (basic)
 function filterMenu() {
-    console.log("Search active...");
+    // Can be enhanced later
+    console.log("Search:", document.getElementById('searchInput').value);
 }
 
-// Initial Load
+// Initial render
 renderCategory('drinks');
 
 // Cart
@@ -187,7 +190,7 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 function addToCart(name, price) {
     cart.push({name, price});
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`✅ ${name} added to cart!`);
+    alert(`✅ ${name} has been added to your cart!`);
 }
 
 window.addToCart = addToCart;
