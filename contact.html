@@ -3,182 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Place Your Order – Supreme Coffee</title>
+  <title>Place Your Order - Supreme Coffee</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: url('cappuccino.jpg') no-repeat center center/cover;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
- 
     .overlay {
-      background: rgba(0,0,0,0.6);
+      background: rgba(28,18,13,0.9);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
- 
-    header {
-      padding: 20px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0,0,0,0.4);
-    }
- 
-    header h1 {
-      margin: 0;
-      font-size: 1.5em;
-    }
- 
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      font-weight: bold;
-    }
- 
-    nav a:hover {
-      text-decoration: underline;
-    }
- 
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
- 
     .order-form {
-      background: rgba(255,255,255,0.95);
-      color: #333;
-      padding: 30px;
-      border-radius: 10px;
-      width: 300px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
+      background: rgba(245,230,211,0.98);
+      color: #1c120d;
     }
- 
-    .order-form h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
- 
-    .order-form label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
- 
-    .order-form input, .order-form select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
- 
-    .submit-link {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 10px;
-      background: #007BFF;
-      color: white;
-      font-weight: bold;
-      border-radius: 5px;
-      text-decoration: none;
-      cursor: pointer;
-      box-sizing: border-box;
-    }
- 
-    .submit-link:hover {
-      background: #0056b3;
-    }
- 
-    aside.contact-info {
-      text-align: center;
-      font-size: 1.1em;
-    }
- 
-    aside.contact-info a {
-      color: #FFD700;
-      text-decoration: none;
-    }
- 
-    aside.contact-info a:hover {
-      text-decoration: underline;
-    }
- 
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: rgba(0,0,0,0.4);
-      font-size: 0.9em;
-    }
+    .cart-item { background: #f8f1e3; }
   </style>
 </head>
 <body>
- 
-  <div class="overlay">
- 
-    <header>
-      <h1>Supreme Coffee</h1>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="menu.html">Menu</a>
-        <a href="contact.html">Contact</a>
-      </nav>
-    </header>
- 
-    <main>
-      <form class="order-form">
-        <h2>Place Your Order</h2>
- 
-        <label for="drink">Choose a drink:</label>
-        <select id="drink" name="drink" required>
-          <option value="">--Select your drink--</option>
-          <option value="cappuccino">Cappuccino</option>
-          <option value="latte">Latte</option>
-          <option value="espresso">Espresso</option>
-          <option value="americano">Americano</option>
-        </select>
- 
-        <label for="quantity">Number of drinks:</label>
-        <input type="number" id="quantity" name="quantity" min="1" required>
- 
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" name="name" required>
- 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
- 
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" required>
- 
-        <a href="order-submitted.html" class="submit-link">Submit Order</a>
-      </form>
- 
-      <aside class="contact-info">
-        <p>📞 Call us: <a href="tel:+2673768493">+267 376 8493</a></p>
-        <p>✉️ Email: <a href="mailto:supremecoffee@gmail.com">supremecoffee@gmail.com</a></p>
-      </aside>
-    </main>
- 
-    <footer>
-      <p>© Supreme Coffee 2026</p>
-    </footer>
- 
+
+<div class="overlay d-flex align-items-center py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <!-- Cart -->
+      <div class="col-lg-5 mb-4">
+        <div class="order-form p-4 rounded-4 shadow">
+          <h3 class="mb-4">Your Cart</h3>
+          <div id="cart-items"></div>
+          <hr>
+          <h5>Total: <span id="cart-total" class="price fs-4">P0.00</span></h5>
+        </div>
+      </div>
+
+      <!-- Order Form -->
+      <div class="col-lg-7">
+        <form id="orderForm" action="https://formspree.io/f/mbdwzlar" method="POST" class="order-form p-5 rounded-4 shadow">
+          <h2 class="text-center mb-4">Place Your Order</h2>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold">Full Name</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Phone Number</label>
+              <input type="tel" name="phone" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Special Instructions / Delivery Address</label>
+            <textarea name="instructions" class="form-control" rows="4"></textarea>
+          </div>
+
+          <input type="hidden" name="order_summary" id="hidden-order">
+
+          <button type="submit" class="btn w-100 py-3 fw-bold fs-5" style="background:#e5c08b; color:#1c120d;">
+            Submit Order
+          </button>
+          <small class="text-center d-block mt-3 text-muted">Your order will be sent to supremecoffee@gmail.com</small>
+        </form>
+      </div>
+    </div>
   </div>
- 
+</div>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    function renderCart() {
+        const container = document.getElementById('cart-items');
+        let total = 0;
+        container.innerHTML = '';
+        
+        cart.forEach(item => {
+            const priceNum = parseFloat(item.price.replace('P',''));
+            total += priceNum;
+            container.innerHTML += `
+                <div class="cart-item p-3 mb-2 rounded d-flex justify-content-between">
+                    <span>${item.name}</span>
+                    <span>${item.price}</span>
+                </div>`;
+        });
+        
+        document.getElementById('cart-total').textContent = `P${total.toFixed(2)}`;
+        document.getElementById('hidden-order').value = JSON.stringify(cart, null, 2);
+    }
+    
+    renderCart();
+    
+    document.getElementById('orderForm').addEventListener('submit', function() {
+        setTimeout(() => {
+            alert("✅ Thank you! Your order has been received.");
+            localStorage.removeItem('cart');
+        }, 700);
+    });
+</script>
 </body>
 </html>
-
 
 
 
