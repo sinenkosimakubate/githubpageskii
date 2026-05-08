@@ -98,7 +98,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Final Menu with all your images
+// Corrected Menu Data
 const menuData = {
     drinks: [
         {name: "Cappuccino", price: "P42.90", desc: "Espresso with steamed milk and thick foam", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93", popular: true},
@@ -137,7 +137,7 @@ function renderCategory(category) {
     } else if (category === 'pastries') {
         heroImage = 'french-pastries-breakfast.jpg';
     } else if (category === 'meals') {
-        heroImage = 'egg-week-2024-1140x518.jpg';   // Your new Meals banner
+        heroImage = 'egg-week-2024-1140x518.jpg';
     }
 
     container.innerHTML = `
@@ -202,3 +202,4 @@ window.addToCart = addToCart;
 </script>
 </body>
 </html>
+
