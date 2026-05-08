@@ -24,7 +24,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(rgba(28,18,13,0.45), rgba(28,18,13,0.65));
+            background: linear-gradient(rgba(28,18,13,0.5), rgba(28,18,13,0.65));
             border-radius: 12px;
         }
         .menu-card {
@@ -39,9 +39,11 @@
         }
         .menu-card img {
             transition: transform 0.6s ease;
+            height: 260px;
+            object-fit: cover;
         }
         .menu-card:hover img {
-            transform: scale(1.15);
+            transform: scale(1.12);
         }
         .price-tag {
             background: #e5c08b;
@@ -96,59 +98,64 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Complete Menu Data
+// Final Menu with all your images
 const menuData = {
     drinks: [
-        {name: "Cappuccino", price: "P42.90", desc: "Espresso with steamed milk and thick foam", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Flat White", price: "P25.90", desc: "Rich espresso with velvety microfoam", img: "https://images.unsplash.com/photo-1517953409833-6c2d3c3a5f6a?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Caramel Latte", price: "P35.90", desc: "Smooth espresso with caramel syrup", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Mocha", price: "P38.90", desc: "Espresso, chocolate & steamed milk", img: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Espresso", price: "P15.90", desc: "Bold and intense single shot", img: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Iced Americano", price: "P28.90", desc: "Chilled espresso over ice", img: "https://images.unsplash.com/photo-1517701604599-bb29b5650906?auto=format&fit=crop&w=800&q=80", popular: false}
+        {name: "Cappuccino", price: "P42.90", desc: "Espresso with steamed milk and thick foam", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93", popular: true},
+        {name: "Flat White", price: "P25.90", desc: "Rich espresso with velvety microfoam", img: "flatwhite.jpg", popular: true},
+        {name: "Caramel Latte", price: "P35.90", desc: "Smooth espresso with caramel syrup", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735", popular: false},
+        {name: "Mocha", price: "P38.90", desc: "Espresso, chocolate & steamed milk", img: "https://images.unsplash.com/photo-1541167760496-1628856ab772", popular: false},
+        {name: "Espresso", price: "P15.90", desc: "Bold and intense single shot", img: "https://images.unsplash.com/photo-1511920170033-f8396924c348", popular: false},
+        {name: "Iced Americano", price: "P28.90", desc: "Chilled espresso over ice", img: "icedamericano.jpg", popular: false}
     ],
     pastries: [
-        {name: "Butter Croissant", price: "P18.90", desc: "Flaky golden French pastry", img: "https://images.unsplash.com/photo-1555507036-4f7c8e5c6e4e?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Chocolate Muffin", price: "P22.90", desc: "Rich dark chocolate chips", img: "https://images.unsplash.com/photo-1606313565693-7f3f7b3f3f3f?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Cinnamon Roll", price: "P26.90", desc: "Warm gooey with cream cheese icing", img: "https://images.unsplash.com/photo-1509365462397-8a3c2f5a5f5f?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Almond Croissant", price: "P29.90", desc: "Filled with sweet almond paste", img: "https://images.unsplash.com/photo-1621996346565-e9a0f6f9e8f8?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Blueberry Scone", price: "P24.90", desc: "Buttery with fresh blueberries", img: "https://images.unsplash.com/photo-1562440499-4c3d7b8e2e3f?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Cheese Danish", price: "P23.90", desc: "Creamy cheese filling", img: "https://images.unsplash.com/photo-1549903072-9f6f2c9e8f8f?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Banana Bread", price: "P19.90", desc: "Moist homemade with walnuts", img: "https://images.unsplash.com/photo-1587241374279-8e5f8f8f8f8f?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Lemon Poppy Seed Muffin", price: "P21.90", desc: "Zesty and refreshing", img: "https://images.unsplash.com/photo-1599785207-8f8f8f8f8f8f?auto=format&fit=crop&w=800&q=80", popular: false}
+        {name: "Butter Croissant", price: "P18.90", desc: "Flaky golden French pastry", img: "buttercroissant.jpg", popular: true},
+        {name: "Chocolate Muffin", price: "P22.90", desc: "Rich dark chocolate chips", img: "chocolatemuffin .jpg", popular: false},
+        {name: "Cinnamon Roll", price: "P26.90", desc: "Warm gooey with cream cheese icing", img: "cinammonroll.jpg", popular: true},
+        {name: "Almond Croissant", price: "P29.90", desc: "Filled with sweet almond paste", img: "almondcroissant.jpg", popular: false},
+        {name: "Blueberry Scone", price: "P24.90", desc: "Buttery with fresh blueberries", img: "blueberryscone.jpg", popular: false},
+        {name: "Cheese Danish", price: "P23.90", desc: "Creamy cheese filling", img: "cheesedanish.jpg", popular: false},
+        {name: "Banana Bread", price: "P19.90", desc: "Moist homemade with walnuts", img: "bananabread.jpg", popular: false},
+        {name: "Lemon Poppy Seed Muffin", price: "P21.90", desc: "Zesty and refreshing", img: "lemonpoppyseedmuffin.jpg", popular: false}
     ],
     meals: [
-        {name: "Avocado Toast", price: "P45.90", desc: "Smashed avocado, poached egg & chili flakes", img: "https://images.unsplash.com/photo-1541519227648-8b4f1c4f8f8f?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Breakfast Sandwich", price: "P52.90", desc: "Egg, bacon, cheese on sourdough", img: "https://images.unsplash.com/photo-1551218808-0f8f8f8f8f8f?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Chicken Pesto Panini", price: "P58.90", desc: "Grilled chicken, pesto & mozzarella", img: "https://images.unsplash.com/photo-1509365462397-8a3c2f5a5f5f?auto=format&fit=crop&w=800&q=80", popular: true},
-        {name: "Granola Bowl", price: "P38.90", desc: "Greek yogurt, fresh fruits & honey", img: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Smoked Salmon Bagel", price: "P55.90", desc: "Cream cheese, capers & red onion", img: "https://images.unsplash.com/photo-1606313565693-7f3f7b3f3f3f?auto=format&fit=crop&w=800&q=80", popular: false},
-        {name: "Quiche Lorraine", price: "P48.90", desc: "Classic ham, cheese & herbs", img: "https://images.unsplash.com/photo-1621996346565-e9a0f6f9e8f8?auto=format&fit=crop&w=800&q=80", popular: false}
+        {name: "Avocado Toast", price: "P45.90", desc: "Smashed avocado, poached egg & chili flakes", img: "avocadotoast.jpg", popular: true},
+        {name: "Breakfast Sandwich", price: "P52.90", desc: "Egg, bacon, cheese on sourdough", img: "breakfastsandwich.jpeg", popular: false},
+        {name: "Chicken Pesto Panini", price: "P58.90", desc: "Grilled chicken, pesto & mozzarella", img: "chickenpestopanini.jpg", popular: true},
+        {name: "Granola Bowl", price: "P38.90", desc: "Greek yogurt, fresh fruits & honey", img: "granolabowl.jpg", popular: false},
+        {name: "Smoked Salmon Bagel", price: "P55.90", desc: "Cream cheese, capers & red onion", img: "smokedsalmonbagel.jpg", popular: false},
+        {name: "Quiche Lorraine", price: "P48.90", desc: "Classic ham, cheese & herbs", img: "quichelorraine.jpeg", popular: false}
     ]
 };
 
 function renderCategory(category) {
     const container = document.getElementById('menuContainer');
-    let heroImage = '';
     
-    if (category === 'drinks') heroImage = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085';
-    else if (category === 'pastries') heroImage = 'https://images.unsplash.com/photo-1555507036-4f7c8e5c6e4e';
-    else heroImage = 'https://images.unsplash.com/photo-1504753793650-d4e3c8e6c3e3';
+    let heroImage = '';
+    if (category === 'drinks') {
+        heroImage = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085';
+    } else if (category === 'pastries') {
+        heroImage = 'french-pastries-breakfast.jpg';
+    } else if (category === 'meals') {
+        heroImage = 'egg-week-2024-1140x518.jpg';   // Your new Meals banner
+    }
 
     container.innerHTML = `
-        <div class="menu-hero" style="background-image: url('${heroImage}?auto=format&fit=crop&w=2000&q=80')">
+        <div class="menu-hero" style="background-image: url('${heroImage}')">
             <h2 style="z-index:2">${category.charAt(0).toUpperCase() + category.slice(1)}</h2>
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-4" id="${category}-grid"></div>
     `;
 
     const grid = document.getElementById(`${category}-grid`);
-    
+    grid.innerHTML = '';
+
     menuData[category].forEach(item => {
         const card = `
             <div class="col">
                 <div class="card menu-card h-100 text-light position-relative">
                     ${item.popular ? '<span class="popular-badge">Popular</span>' : ''}
-                    <img src="${item.img}" class="card-img-top" style="height: 260px; object-fit: cover;" alt="${item.name}">
+                    <img src="${item.img}" class="card-img-top" alt="${item.name}">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${item.name}</h5>
                         <p class="card-text flex-grow-1">${item.desc}</p>
@@ -175,13 +182,11 @@ document.querySelectorAll('.category-tab').forEach(tab => {
     });
 });
 
-// Search (basic)
 function filterMenu() {
-    // Can be enhanced later
-    console.log("Search:", document.getElementById('searchInput').value);
+    console.log("Search active");
 }
 
-// Initial render
+// Initial Load
 renderCategory('drinks');
 
 // Cart
@@ -190,7 +195,7 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 function addToCart(name, price) {
     cart.push({name, price});
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`✅ ${name} has been added to your cart!`);
+    alert(`✅ ${name} added to cart!`);
 }
 
 window.addToCart = addToCart;
