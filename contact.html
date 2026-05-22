@@ -7,24 +7,58 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    .overlay { background: rgba(28,18,13,0.9); min-height: 100vh; }
     .order-form { background: rgba(245,230,211,0.98); color: #1c120d; }
-    .cart-item { background: #f8f1e3; }
+    .cart-item { background: #f8f1e3; border-radius: 8px; }
     #successMessage { display: none; }
+
+    .remove-btn {
+        background: none;
+        border: none;
+        color: #d9534f;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 0 4px;
+        line-height: 1;
+    }
+    .remove-btn:hover { color: #a02020; }
+
+    .empty-cart {
+        text-align: center;
+        padding: 30px 20px;
+        color: #7a5c44;
+    }
+    .empty-cart a {
+        color: #1c120d;
+        font-weight: bold;
+        text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
-<div class="overlay d-flex align-items-center py-5">
+<header>
+  <h1>Supreme Coffee</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="contact.html" class="cart-link">
+      Order Now
+      <span id="cart-badge"></span>
+    </a>
+  </nav>
+</header>
+
+<div class="py-5" style="background:#2b1b14; min-height:calc(100vh - 73px);">
   <div class="container">
     <div class="row justify-content-center">
+
       <!-- Cart -->
       <div class="col-lg-5 mb-4">
         <div class="order-form p-4 rounded-4 shadow">
-          <h3 class="mb-4">Your Cart</h3>
+          <h3 class="mb-4">🛒 Your Cart</h3>
           <div id="cart-items"></div>
           <hr>
-          <h5>Total: <span id="cart-total" class="price fs-4">P0.00</span></h5>
+          <h5>Total: <span id="cart-total" class="fs-4 fw-bold">P0.00</span></h5>
         </div>
       </div>
 
@@ -32,12 +66,12 @@
       <div class="col-lg-7">
         <form id="orderForm" class="order-form p-5 rounded-4 shadow">
           <h2 class="text-center mb-4">Place Your Order</h2>
-          
+
           <div class="mb-3">
             <label class="form-label fw-bold">Full Name</label>
             <input type="text" name="name" class="form-control" required>
           </div>
-          
+
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label fw-bold">Email</label>
@@ -57,85 +91,128 @@
           <input type="hidden" name="order_summary" id="hidden-order">
           <input type="hidden" name="_subject" value="New Order from Supreme Coffee Website">
 
-          <button type="submit" id="submitBtn" class="btn w-100 py-3 fw-bold fs-5" style="background:#e5c08b; color:#1c120d;">
+          <button type="submit" id="submitBtn" class="btn w-100 py-3 fw-bold fs-5"
+                  style="background:#e5c08b; color:#1c120d;">
             Submit Order
           </button>
         </form>
 
         <!-- Success Message -->
         <div id="successMessage" class="order-form p-5 rounded-4 shadow text-center">
-          <h2 style="color:#e5c08b;">✅ Order Submitted Successfully!</h2>
+          <h2 style="color:#1c120d;">✅ Order Submitted!</h2>
           <p class="lead">Thank you! Your order has been received.</p>
           <p>We will contact you shortly to confirm.</p>
-          <button onclick="window.location.reload()" class="btn mt-3" style="background:#1c120d; color:#e5c08b;">
+          <button onclick="window.location.reload()" class="btn mt-3"
+                  style="background:#1c120d; color:#e5c08b;">
             Place Another Order
           </button>
         </div>
       </div>
+
     </div>
   </div>
 </div>
 
+<footer>
+  <p>© Supreme Coffee 2026 • All Rights Reserved</p>
+</footer>
+
 <script>
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    function renderCart() {
-        const container = document.getElementById('cart-items');
-        let total = 0;
-        container.innerHTML = '';
-        
-        cart.forEach(item => {
-            const priceNum = parseFloat(item.price.replace('P',''));
-            total += priceNum;
-            container.innerHTML += `
-                <div class="cart-item p-3 mb-2 rounded d-flex justify-content-between">
-                    <span>${item.name}</span>
-                    <span>${item.price}</span>
-                </div>`;
-        });
-        
-        document.getElementById('cart-total').textContent = `P${total.toFixed(2)}`;
-        document.getElementById('hidden-order').value = JSON.stringify(cart, null, 2);
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    saveCart();
+    renderCart();
+    updateCartBadge();
+  }
+
+  function renderCart() {
+    const container = document.getElementById('cart-items');
+    let total = 0;
+    container.innerHTML = '';
+
+    if (cart.length === 0) {
+      container.innerHTML = `
+        <div class="empty-cart">
+          <p>🛒 Your cart is empty.</p>
+          <p><a href="menu.html">Browse the menu</a> to add items.</p>
+        </div>`;
+      document.getElementById('cart-total').textContent = 'P0.00';
+      document.getElementById('hidden-order').value = '[]';
+      return;
     }
 
-    renderCart();
-
-    // Silent Form Submission to Formspree
-    document.getElementById('orderForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Sending...";
-
-        const formData = new FormData(this);
-
-        try {
-            const response = await fetch('https://formspree.io/f/mbdwzlar', {
-                method: 'POST',
-                body: formData,
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (response.ok) {
-                // Hide form and show success
-                document.getElementById('orderForm').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-                
-                // Clear cart
-                localStorage.removeItem('cart');
-            } else {
-                alert("Something went wrong. Please try again.");
-            }
-        } catch (error) {
-            alert("Connection error. Please check your internet and try again.");
-        }
-
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit Order";
+    cart.forEach((item, i) => {
+      const priceNum = parseFloat(item.price.replace('P', ''));
+      total += priceNum;
+      container.innerHTML += `
+        <div class="cart-item p-3 mb-2 d-flex justify-content-between align-items-center">
+          <span>${item.name}</span>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold">${item.price}</span>
+            <button class="remove-btn" onclick="removeItem(${i})" title="Remove">✕</button>
+          </div>
+        </div>`;
     });
+
+    document.getElementById('cart-total').textContent = `P${total.toFixed(2)}`;
+    document.getElementById('hidden-order').value = JSON.stringify(cart, null, 2);
+  }
+
+  function updateCartBadge() {
+    const badge = document.getElementById('cart-badge');
+    if (cart.length > 0) {
+      badge.textContent = cart.length;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  renderCart();
+  updateCartBadge();
+
+  document.getElementById('orderForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (cart.length === 0) {
+      alert('Your cart is empty! Please add items before submitting.');
+      return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    const formData = new FormData(this);
+
+    try {
+      const response = await fetch('https://formspree.io/f/mbdwzlar', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        document.getElementById('orderForm').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+        localStorage.removeItem('cart');
+      } else {
+        alert('Something went wrong. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Order';
+      }
+    } catch (error) {
+      alert('Connection error. Please check your internet and try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Order';
+    }
+  });
 </script>
 </body>
 </html>
-
-
