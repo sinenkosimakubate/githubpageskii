@@ -100,21 +100,6 @@
             color: #1c120d;
         }
 
-        /* ── Section label ── */
-        .section-eyebrow {
-            color: #8a6a52;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .section-title {
-            color: #e5c08b;
-            font-size: 1.7rem;
-            font-weight: 700;
-            margin-bottom: 36px;
-        }
-
         /* ── Menu cards ── */
         .menu-card {
             background: #3b241b;
@@ -211,7 +196,7 @@
             transform: translateY(-1px);
         }
 
-        /* ── Popular badge ── */
+        /* Popular badge */
         .popular-badge {
             position: absolute;
             top: 12px;
@@ -226,16 +211,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* ── No results ── */
-        #no-results {
-            display: none;
-            text-align: center;
-            padding: 80px 20px;
-            color: #8a6a52;
-        }
-        #no-results h3 { color: #e5c08b; margin-bottom: 10px; }
-
-        /* ── Toast ── */
+        /* Toast */
         #cart-toast {
             position: fixed;
             bottom: 30px;
@@ -268,7 +244,7 @@
     </nav>
 </header>
 
-<!-- Page hero — swaps image per category via JS -->
+<!-- Page hero -->
 <div class="page-banner" id="pageBanner">
     <div class="container banner-content">
         <p class="section-eyebrow">Supreme Coffee</p>
@@ -307,6 +283,12 @@
 
 <div id="cart-toast"></div>
 
+<!-- Floating Cart Button -->
+<a href="contact.html" id="floating-cart">
+    🛒
+    <span class="cart-count" id="floating-count">0</span>
+</a>
+
 <footer>
     <p>© Supreme Coffee 2026 • All Rights Reserved</p>
 </footer>
@@ -343,26 +325,16 @@ const menuData = {
 };
 
 const bannerConfig = {
-    drinks: {
-        img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2000&q=80',
-        title: 'Drinks',
-        sub: 'From bold espressos to velvety lattes'
-    },
-    pastries: {
-        img: 'french-pastries-breakfast.jpg',
-        title: 'Pastries',
-        sub: 'Baked fresh every morning'
-    },
-    meals: {
-        img: 'egg-week-2024-1140x518.jpg',
-        title: 'Meals',
-        sub: 'Hearty bites to fuel your day'
-    }
+    drinks: { img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2000&q=80', title: 'Drinks', sub: 'From bold espressos to velvety lattes' },
+    pastries: { img: 'french-pastries-breakfast.jpg', title: 'Pastries', sub: 'Baked fresh every morning' },
+    meals: { img: 'egg-week-2024-1140x518.jpg', title: 'Meals', sub: 'Hearty bites to fuel your day' }
 };
 
-const quantities = {};
-let activeCategory = 'drinks';
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
 
 function setBanner(category) {
     const cfg = bannerConfig[category];
@@ -375,7 +347,6 @@ function setBanner(category) {
 }
 
 function renderCategory(category) {
-    activeCategory = category;
     document.getElementById('searchInput').value = '';
     document.getElementById('no-results').style.display = 'none';
     setBanner(category);
@@ -389,7 +360,6 @@ function renderItems(items, gridId) {
     if (!grid) return;
     grid.innerHTML = '';
     items.forEach(item => {
-        if (!quantities[item.name]) quantities[item.name] = 1;
         const safeId = item.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
         grid.innerHTML += `
             <div class="col">
@@ -404,10 +374,7 @@ function renderItems(items, gridId) {
                         <div class="card-footer-row">
                             <span class="price-tag">${item.price}</span>
                             <div class="add-controls">
-                                <button class="qty-btn" onclick="changeQty('${item.name}', -1)">−</button>
-                                <span class="qty-display" id="qty-${safeId}">${quantities[item.name]}</span>
-                                <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
-                                <button class="add-btn" onclick="addToCart('${item.name}', '${item.price}')">Add</button>
+                                <button class="add-btn" onclick="addToCart('${item.name}', '${item.price}')">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -416,20 +383,56 @@ function renderItems(items, gridId) {
     });
 }
 
-function changeQty(name, delta) {
-    if (!quantities[name]) quantities[name] = 1;
-    quantities[name] = Math.max(1, quantities[name] + delta);
-    const safeId = name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
-    const el = document.getElementById('qty-' + safeId);
-    if (el) el.textContent = quantities[name];
+function addToCart(name, price) {
+    cart.push({name, price});
+    saveCart();
+    updateCartBadge();
+    showToast(`✅ ${name} added`);
 }
+
+function showToast(msg) {
+    const t = document.getElementById('cart-toast');
+    t.textContent = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.style.opacity = '0', 2500);
+}
+
+function updateCartBadge() {
+    const count = cart.length;
+    const badge = document.getElementById('cart-badge');
+    const floatingCount = document.getElementById('floating-count');
+
+    if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline';
+        floatingCount.textContent = count;
+        floatingCount.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+        floatingCount.style.display = 'none';
+    }
+}
+
+// Tab pills
+document.querySelectorAll('.cat-pill').forEach(pill => {
+    pill.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        renderCategory(pill.dataset.category);
+    });
+});
 
 function filterMenu() {
     const query = document.getElementById('searchInput').value.trim().toLowerCase();
     const noResults = document.getElementById('no-results');
     document.getElementById('search-term').textContent = query;
 
-    if (!query) { renderCategory(activeCategory); return; }
+    if (!query) { 
+        renderCategory(document.querySelector('.cat-pill.active').dataset.category); 
+        return; 
+    }
 
     let results = [];
     Object.keys(menuData).forEach(cat => {
@@ -450,41 +453,7 @@ function filterMenu() {
     renderItems(results, 'search');
 }
 
-function addToCart(name, price) {
-    const qty = quantities[name] || 1;
-    for (let i = 0; i < qty; i++) cart.push({name, price});
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartBadge();
-    showToast(`✅ ${qty > 1 ? qty + '× ' : ''}${name} added`);
-}
-
-function showToast(msg) {
-    const t = document.getElementById('cart-toast');
-    t.textContent = msg;
-    t.style.opacity = '1';
-    clearTimeout(t._t);
-    t._t = setTimeout(() => t.style.opacity = '0', 2500);
-}
-
-function updateCartBadge() {
-    const badge = document.getElementById('cart-badge');
-    if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline'; }
-    else { badge.style.display = 'none'; }
-}
-
-// Tab pills
-document.querySelectorAll('.cat-pill').forEach(pill => {
-    pill.addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        renderCategory(pill.dataset.category);
-    });
-});
-
-window.addToCart = addToCart;
-window.changeQty = changeQty;
-
+// Initialize
 renderCategory('drinks');
 updateCartBadge();
 </script>
