@@ -63,6 +63,41 @@
             border-radius: 20px;
             z-index: 2;
         }
+        /* Quantity controls */
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: #1c120d;
+            color: #e5c08b;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .qty-btn:hover { background: #2b1b14; }
+        .qty-display {
+            color: #f5e6d3;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        /* No results */
+        #no-results {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: #e5c08b;
+        }
     </style>
 </head>
 <body>
@@ -72,7 +107,10 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="menu.html">Menu</a>
-        <a href="contact.html">Order Now</a>
+        <a href="contact.html" class="cart-link">
+            Order Now
+            <span id="cart-badge"></span>
+        </a>
     </nav>
 </header>
 
@@ -80,7 +118,8 @@
     <h1 class="text-center display-4 mb-5" style="color:#e5c08b;">Our Menu</h1>
 
     <div class="mb-4">
-        <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search menu..." onkeyup="filterMenu()">
+        <input type="text" id="searchInput" class="form-control form-control-lg"
+               placeholder="Search menu..." oninput="filterMenu()">
     </div>
 
     <ul class="nav nav-tabs justify-content-center mb-5" id="menuTabs">
@@ -90,6 +129,10 @@
     </ul>
 
     <div id="menuContainer"></div>
+    <div id="no-results">
+        <h3>No items found for "<span id="search-term"></span>"</h3>
+        <p>Try a different search term.</p>
+    </div>
 </div>
 
 <footer>
@@ -98,7 +141,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Corrected Menu Data
 const menuData = {
     drinks: [
         {name: "Cappuccino", price: "P42.90", desc: "Espresso with steamed milk and thick foam", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93", popular: true},
@@ -128,30 +170,39 @@ const menuData = {
     ]
 };
 
-function renderCategory(category) {
-    const container = document.getElementById('menuContainer');
-    
-    let heroImage = '';
-    if (category === 'drinks') {
-        heroImage = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085';
-    } else if (category === 'pastries') {
-        heroImage = 'french-pastries-breakfast.jpg';
-    } else if (category === 'meals') {
-        heroImage = 'egg-week-2024-1140x518.jpg';
-    }
+// Quantities per item (reset on page load)
+const quantities = {};
 
+let activeCategory = 'drinks';
+
+function getHeroImage(category) {
+    if (category === 'drinks') return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085';
+    if (category === 'pastries') return 'french-pastries-breakfast.jpg';
+    if (category === 'meals') return 'egg-week-2024-1140x518.jpg';
+}
+
+function renderCategory(category) {
+    activeCategory = category;
+    document.getElementById('searchInput').value = '';
+    document.getElementById('no-results').style.display = 'none';
+
+    const container = document.getElementById('menuContainer');
     container.innerHTML = `
-        <div class="menu-hero" style="background-image: url('${heroImage}')">
+        <div class="menu-hero" style="background-image: url('${getHeroImage(category)}')">
             <h2 style="z-index:2">${category.charAt(0).toUpperCase() + category.slice(1)}</h2>
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-4" id="${category}-grid"></div>
     `;
+    renderItems(menuData[category], category);
+}
 
+function renderItems(items, category) {
     const grid = document.getElementById(`${category}-grid`);
     grid.innerHTML = '';
-
-    menuData[category].forEach(item => {
-        const card = `
+    items.forEach(item => {
+        const key = item.name;
+        if (!quantities[key]) quantities[key] = 1;
+        grid.innerHTML += `
             <div class="col">
                 <div class="card menu-card h-100 text-light position-relative">
                     ${item.popular ? '<span class="popular-badge">Popular</span>' : ''}
@@ -161,16 +212,63 @@ function renderCategory(category) {
                         <p class="card-text flex-grow-1">${item.desc}</p>
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <span class="price-tag fs-5">${item.price}</span>
-                            <button onclick="addToCart('${item.name}', '${item.price}')" 
-                                    class="btn btn-sm px-4" style="background:#e5c08b; color:#1c120d; font-weight:bold;">
-                                Add to Cart
-                            </button>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="qty-controls">
+                                    <button class="qty-btn" onclick="changeQty('${key}', -1)">−</button>
+                                    <span class="qty-display" id="qty-${key.replace(/\s/g,'-')}">${quantities[key]}</span>
+                                    <button class="qty-btn" onclick="changeQty('${key}', 1)">+</button>
+                                </div>
+                                <button onclick="addToCart('${item.name}', '${item.price}')"
+                                        class="btn btn-sm px-3" style="background:#e5c08b; color:#1c120d; font-weight:bold;">
+                                    Add
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>`;
-        grid.innerHTML += card;
     });
+}
+
+function changeQty(name, delta) {
+    const key = name;
+    if (!quantities[key]) quantities[key] = 1;
+    quantities[key] = Math.max(1, quantities[key] + delta);
+    const el = document.getElementById('qty-' + key.replace(/\s/g, '-'));
+    if (el) el.textContent = quantities[key];
+}
+
+function filterMenu() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    document.getElementById('search-term').textContent = query;
+
+    if (!query) {
+        renderCategory(activeCategory);
+        return;
+    }
+
+    // Search across ALL categories
+    let allResults = [];
+    Object.keys(menuData).forEach(cat => {
+        menuData[cat].forEach(item => {
+            if (item.name.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)) {
+                allResults.push({...item, _cat: cat});
+            }
+        });
+    });
+
+    const container = document.getElementById('menuContainer');
+    const noResults = document.getElementById('no-results');
+
+    if (allResults.length === 0) {
+        container.innerHTML = '';
+        noResults.style.display = 'block';
+        return;
+    }
+
+    noResults.style.display = 'none';
+    container.innerHTML = `<div class="row row-cols-1 row-cols-md-3 g-4" id="search-grid"></div>`;
+    renderItems(allResults, 'search');
 }
 
 // Tab functionality
@@ -182,24 +280,55 @@ document.querySelectorAll('.category-tab').forEach(tab => {
     });
 });
 
-function filterMenu() {
-    console.log("Search active");
-}
-
-// Initial Load
-renderCategory('drinks');
-
 // Cart
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function addToCart(name, price) {
-    cart.push({name, price});
+    const qty = quantities[name] || 1;
+    for (let i = 0; i < qty; i++) {
+        cart.push({name, price});
+    }
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`✅ ${name} added to cart!`);
+    updateCartBadge();
+
+    // Toast notification
+    showToast(`✅ ${qty > 1 ? qty + 'x ' : ''}${name} added!`);
+}
+
+function showToast(msg) {
+    let toast = document.getElementById('cart-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'cart-toast';
+        toast.style.cssText = `
+            position:fixed; bottom:30px; right:30px; background:#e5c08b; color:#1c120d;
+            padding:12px 24px; border-radius:8px; font-weight:bold; z-index:9999;
+            box-shadow:0 4px 15px rgba(0,0,0,0.3); transition:opacity 0.4s;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+}
+
+function updateCartBadge() {
+    const badge = document.getElementById('cart-badge');
+    if (cart.length > 0) {
+        badge.textContent = cart.length;
+        badge.style.display = 'inline';
+    } else {
+        badge.style.display = 'none';
+    }
 }
 
 window.addToCart = addToCart;
+window.changeQty = changeQty;
+
+// Initial load
+renderCategory('drinks');
+updateCartBadge();
 </script>
 </body>
 </html>
-
