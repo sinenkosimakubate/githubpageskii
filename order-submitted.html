@@ -19,7 +19,7 @@
     }
     .confirm-box {
         background: #f5ece0;
-        border: 2px solid #1c120d;
+        border: 3px solid #1c120d;
         border-radius: 20px;
         padding: 70px 50px;
         text-align: center;
@@ -33,15 +33,15 @@
         display: block; 
     }
     .confirm-box h1 { 
-        color: #1c120d; 
+        color: #000000; 
         font-size: 2.5rem; 
         font-weight: 700; 
         margin-bottom: 18px; 
     }
     .confirm-box p { 
-        color: #000000;           /* Pure black text */
-        line-height: 1.7; 
-        font-size: 1.08rem;
+        color: #000000; 
+        line-height: 1.75; 
+        font-size: 1.1rem;
         margin-bottom: 12px; 
         font-weight: 500;
     }
@@ -55,21 +55,10 @@
         text-decoration: none;
         font-weight: 700;
         font-size: 1.1rem;
-        transition: all 0.2s;
     }
     .confirm-btn:hover { 
         background: #2b1b14; 
         transform: translateY(-3px); 
-    }
-    .confirm-btn-outline {
-        background: transparent;
-        color: #1c120d;
-        border: 2px solid #1c120d;
-        margin-left: 12px;
-    }
-    .confirm-btn-outline:hover {
-        background: #1c120d;
-        color: #e5c08b;
     }
   </style>
 </head>
@@ -91,14 +80,9 @@
   <div class="confirm-box">
     <span class="confirm-icon">☕</span>
     <h1>Order Received!</h1>
-    <p>Thank you for choosing Supreme Coffee.</p>
-    <p>Your order has been submitted successfully.</p>
-    <p>We'll contact you shortly via email or phone to confirm the details.</p>
-    
-    <div>
-      <a href="contact.html" class="confirm-btn">Place Another Order</a>
-      <a href="index.html" class="confirm-btn confirm-btn-outline">Back to Home</a>
-    </div>
+    <p>Thank you for your order. It has been submitted successfully.</p>
+    <p>We'll be in touch shortly to confirm at your email or phone number.</p>
+    <a href="contact.html" class="confirm-btn">Place Another Order</a>
   </div>
 </div>
 
@@ -128,7 +112,6 @@
       floatingCount.style.display = 'none';
     }
   }
-
   updateCartBadge();
 </script>
 </body>
