@@ -19,28 +19,56 @@
     }
     .confirm-box {
         background: #1c120d;
-        border: 1px solid rgba(229,192,139,0.18);
+        border: 1px solid rgba(229,192,139,0.25);
         border-radius: 20px;
-        padding: 60px 50px;
+        padding: 70px 50px;
         text-align: center;
-        max-width: 480px;
+        max-width: 500px;
         width: 100%;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
-    .confirm-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
-    .confirm-box h1 { color: #e5c08b; font-size: 2rem; font-weight: 700; margin-bottom: 14px; }
-    .confirm-box p { color: #c9a87a; line-height: 1.7; margin-bottom: 6px; }
+    .confirm-icon { 
+        font-size: 4.5rem; 
+        margin-bottom: 24px; 
+        display: block; 
+    }
+    .confirm-box h1 { 
+        color: #e5c08b; 
+        font-size: 2.4rem; 
+        font-weight: 700; 
+        margin-bottom: 16px; 
+    }
+    .confirm-box p { 
+        color: #c9a87a; 
+        line-height: 1.7; 
+        font-size: 1.05rem;
+        margin-bottom: 8px; 
+    }
     .confirm-btn {
         display: inline-block;
-        margin-top: 28px;
-        padding: 13px 36px;
+        margin-top: 30px;
+        padding: 14px 40px;
         background: #e5c08b;
         color: #1c120d;
         border-radius: 8px;
         text-decoration: none;
         font-weight: 700;
-        transition: background 0.2s, transform 0.15s;
+        font-size: 1.1rem;
+        transition: all 0.2s;
     }
-    .confirm-btn:hover { background: #d4ad77; transform: translateY(-1px); color: #1c120d; }
+    .confirm-btn:hover { 
+        background: #d4ad77; 
+        transform: translateY(-3px); 
+    }
+    .confirm-btn-outline {
+        background: transparent;
+        color: #e5c08b;
+        border: 2px solid #e5c08b;
+        margin-left: 12px;
+    }
+    .confirm-btn-outline:hover {
+        background: rgba(229,192,139,0.1);
+    }
   </style>
 </head>
 <body>
@@ -50,7 +78,10 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="menu.html">Menu</a>
-    <a href="contact.html">Order Now</a>
+    <a href="contact.html" class="cart-link">
+      Order Now
+      <span id="cart-badge"></span>
+    </a>
   </nav>
 </header>
 
@@ -58,15 +89,45 @@
   <div class="confirm-box">
     <span class="confirm-icon">☕</span>
     <h1>Order Received!</h1>
-    <p>Thank you for your order. It has been submitted successfully.</p>
-    <p>We'll be in touch shortly to confirm at your email or phone number.</p>
-    <a href="contact.html" class="confirm-btn">Place Another Order</a>
+    <p>Thank you for choosing Supreme Coffee.</p>
+    <p>Your order has been submitted successfully.</p>
+    <p>We'll contact you shortly via email or phone to confirm the details.</p>
+    
+    <div>
+      <a href="contact.html" class="confirm-btn">Place Another Order</a>
+      <a href="index.html" class="confirm-btn confirm-btn-outline">Back to Home</a>
+    </div>
   </div>
 </div>
+
+<!-- Floating Cart Button -->
+<a href="contact.html" id="floating-cart">
+    🛒
+    <span class="cart-count" id="floating-count">0</span>
+</a>
 
 <footer>
   <p>© Supreme Coffee 2026 • All Rights Reserved</p>
 </footer>
 
+<script>
+  function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const badge = document.getElementById('cart-badge');
+    const floatingCount = document.getElementById('floating-count');
+
+    if (cart.length > 0) {
+      badge.textContent = cart.length;
+      badge.style.display = 'inline';
+      floatingCount.textContent = cart.length;
+      floatingCount.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+      floatingCount.style.display = 'none';
+    }
+  }
+
+  updateCartBadge();
+</script>
 </body>
 </html>
